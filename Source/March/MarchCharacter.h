@@ -6,6 +6,8 @@
 #include "GameFramework/Character.h"
 #include "MarchCharacter.generated.h"
 
+class UJoustingComponent;
+
 UCLASS(config=Game)
 class AMarchCharacter : public ACharacter
 {
@@ -23,14 +25,20 @@ class AMarchCharacter : public ACharacter
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Motorcycle, meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* MotorcycleMeshComponent;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Motorcycle, meta = (AllowPrivateAccess = "true"))
+	// Jousting
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Jousting, meta = (AllowPrivateAccess = "true"))
+	UJoustingComponent* JoustingComponent;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Jousting, meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* LanceMeshComponent;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Motorcycle, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Jousting, meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* ShieldMeshComponent;
+	//
 	
 public:
 	AMarchCharacter();
+	void SetDefaultConstructorVariables();
 
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
@@ -45,9 +53,8 @@ public:
 
 protected:
 
-	void BeginPlay() override;
 	
-	void SetDefaultConstructorVariables();
+	void BeginPlay() override;
 
 	/** Called for forwards/backward input */
 	void MoveForward(float Value);
@@ -58,22 +65,12 @@ protected:
 	void TurnAtRate(float Rate);
 	
 	void LookUpAtRate(float Rate);
-
-	// /** Handler for when a touch input begins. */
-	// void TouchStarted(ETouchIndex::Type FingerIndex, FVector Location);
-	//
-	// /** Handler for when a touch input stops. */
-	// void TouchStopped(ETouchIndex::Type FingerIndex, FVector Location);
-
+	
 protected:
-	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	// End of APawn interface
 
 public:
-	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
-	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 };
 

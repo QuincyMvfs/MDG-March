@@ -2,6 +2,8 @@
 
 #include "MarchCharacter.h"
 #include "HeadMountedDisplayFunctionLibrary.h"
+#include "MarchController.h"
+#include "ActorComponents/JoustingComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
@@ -23,6 +25,11 @@ AMarchCharacter::AMarchCharacter()
 	LanceMeshComponent->SetupAttachment(GetMesh());
 	ShieldMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("Shield");
 	ShieldMeshComponent->SetupAttachment(GetMesh());
+
+	JoustingComponent = CreateDefaultSubobject<UJoustingComponent>("JoustingComponent");
+	JoustingComponent->JoustingMesh = LanceMeshComponent;
+	JoustingComponent->JoustingCamera = GetFollowCamera();
+
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -85,20 +92,13 @@ void AMarchCharacter::SetDefaultConstructorVariables()
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
 }
 
-// void AMarchCharacter::TouchStarted(ETouchIndex::Type FingerIndex, FVector Location)
-// {
-// 		Jump();
-// }
-//
-// void AMarchCharacter::TouchStopped(ETouchIndex::Type FingerIndex, FVector Location)
-// {
-// 		StopJumping();
-// }
-
 void AMarchCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	//AMarchController* Controller = Cast<AMarchController>(GetController());
+	JoustingComponent->JoustingController = Cast<AMarchController>(GetController());
+	
 	StartForwardVector = GetRootComponent()->GetForwardVector();
 	StartRightVector = GetRootComponent()->GetRightVector();
 }
