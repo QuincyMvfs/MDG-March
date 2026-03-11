@@ -22,6 +22,12 @@ class AMarchCharacter : public ACharacter
 	// Motorcycle
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Motorcycle, meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* MotorcycleMeshComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Motorcycle, meta = (AllowPrivateAccess = "true"))
+	UStaticMeshComponent* LanceMeshComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Motorcycle, meta = (AllowPrivateAccess = "true"))
+	UStaticMeshComponent* ShieldMeshComponent;
 	
 public:
 	AMarchCharacter();
@@ -34,8 +40,13 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float BaseLookUpRate;
 
+	FVector StartForwardVector;
+	FVector StartRightVector;
+
 protected:
 
+	void BeginPlay() override;
+	
 	void SetDefaultConstructorVariables();
 
 	/** Called for forwards/backward input */
@@ -48,11 +59,11 @@ protected:
 	
 	void LookUpAtRate(float Rate);
 
-	/** Handler for when a touch input begins. */
-	void TouchStarted(ETouchIndex::Type FingerIndex, FVector Location);
-
-	/** Handler for when a touch input stops. */
-	void TouchStopped(ETouchIndex::Type FingerIndex, FVector Location);
+	// /** Handler for when a touch input begins. */
+	// void TouchStarted(ETouchIndex::Type FingerIndex, FVector Location);
+	//
+	// /** Handler for when a touch input stops. */
+	// void TouchStopped(ETouchIndex::Type FingerIndex, FVector Location);
 
 protected:
 	// APawn interface

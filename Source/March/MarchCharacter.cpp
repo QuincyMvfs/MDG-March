@@ -18,6 +18,11 @@ AMarchCharacter::AMarchCharacter()
 
 	MotorcycleMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("Motorcycle");
 	MotorcycleMeshComponent->SetupAttachment(GetRootComponent());
+	
+	LanceMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("Lance");
+	LanceMeshComponent->SetupAttachment(GetMesh());
+	ShieldMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("Shield");
+	ShieldMeshComponent->SetupAttachment(GetMesh());
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -26,8 +31,8 @@ void AMarchCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInp
 {
 	// Set up gameplay key bindings
 	check(PlayerInputComponent);
-	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
-	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
+	// PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
+	// PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
 	PlayerInputComponent->BindAxis("MoveForward", this, &AMarchCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &AMarchCharacter::MoveRight);
@@ -40,11 +45,10 @@ void AMarchCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInp
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("LookUpRate", this, &AMarchCharacter::LookUpAtRate);
 
-	// handle touch devices
-	PlayerInputComponent->BindTouch(IE_Pressed, this, &AMarchCharacter::TouchStarted);
-	PlayerInputComponent->BindTouch(IE_Released, this, &AMarchCharacter::TouchStopped);
+	// // handle touch devices
+	// PlayerInputComponent->BindTouch(IE_Pressed, this, &AMarchCharacter::TouchStarted);
+	// PlayerInputComponent->BindTouch(IE_Released, this, &AMarchCharacter::TouchStopped);
 }
-
 
 void AMarchCharacter::SetDefaultConstructorVariables()
 {
@@ -81,14 +85,22 @@ void AMarchCharacter::SetDefaultConstructorVariables()
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
 }
 
-void AMarchCharacter::TouchStarted(ETouchIndex::Type FingerIndex, FVector Location)
-{
-		Jump();
-}
+// void AMarchCharacter::TouchStarted(ETouchIndex::Type FingerIndex, FVector Location)
+// {
+// 		Jump();
+// }
+//
+// void AMarchCharacter::TouchStopped(ETouchIndex::Type FingerIndex, FVector Location)
+// {
+// 		StopJumping();
+// }
 
-void AMarchCharacter::TouchStopped(ETouchIndex::Type FingerIndex, FVector Location)
+void AMarchCharacter::BeginPlay()
 {
-		StopJumping();
+	Super::BeginPlay();
+
+	StartForwardVector = GetRootComponent()->GetForwardVector();
+	StartRightVector = GetRootComponent()->GetRightVector();
 }
 
 void AMarchCharacter::TurnAtRate(float Rate)
@@ -107,13 +119,7 @@ void AMarchCharacter::MoveForward(float Value)
 {
 	if ((Controller != nullptr) && (Value != 0.0f))
 	{
-		// find out which way is forward
-		const FRotator Rotation = Controller->GetControlRotation();
-		const FRotator YawRotation(0, Rotation.Yaw, 0);
-
-		// get forward vector
-		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-		AddMovementInput(Direction, Value);
+		AddMovementInput(StartForwardVector, Value);
 	}
 }
 
@@ -121,13 +127,6 @@ void AMarchCharacter::MoveRight(float Value)
 {
 	if ( (Controller != nullptr) && (Value != 0.0f) )
 	{
-		// find out which way is right
-		const FRotator Rotation = Controller->GetControlRotation();
-		const FRotator YawRotation(0, Rotation.Yaw, 0);
-	
-		// get right vector 
-		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
-		// add movement in that direction
-		AddMovementInput(Direction, Value);
+		AddMovementInput(StartRightVector, Value * 0.5f);
 	}
 }
