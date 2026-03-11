@@ -127,6 +127,6 @@ void AMarchCharacter::MoveRight(float Value)
 {
 	if ( (Controller != nullptr) && (Value != 0.0f) )
 	{
-		AddMovementInput(StartRightVector, Value * 0.5f);
+		AddMovementInput(StartRightVector, Value * MoveRightSpeedMultiplier);
 	}
 }

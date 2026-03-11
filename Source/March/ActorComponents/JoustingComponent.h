@@ -38,20 +38,20 @@ public:
 	//
 
 	// Editor Tweak-able Variables
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Jousting")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Jousting", meta = (ToolTip = "How fast the Lance lowers"))
 	float JoustingGravity = 2.0f;
 	//
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta=(HideInDetailPanel), Category="Jousting")
+	UPROPERTY()
 	bool IsJousting = false;
-
+	
 	// Referenced Variables
-	UPROPERTY(EditAnywhere, meta=(HideInDetailPanel), Category="Jousting")
+	UPROPERTY(EditAnywhere, Category="Jousting")
 	AMarchController* JoustingController = nullptr;
 
-	UPROPERTY(EditAnywhere, meta=(HideInDetailPanel), Category="Jousting")
+	UPROPERTY(EditAnywhere, Category="Jousting")
 	UCameraComponent* JoustingCamera = nullptr;
 	
-	UPROPERTY(EditAnywhere, meta=(HideInDetailPanel), Category="Jousting")
+	UPROPERTY(EditAnywhere, Category="Jousting")
 	UStaticMeshComponent* JoustingMesh = nullptr;
 };

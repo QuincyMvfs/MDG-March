@@ -46,7 +46,10 @@ public:
 
 	/** Base look up/down rate, in deg/sec. Other scaling may affect final rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
-	float BaseLookUpRate;
+	float BaseLookUpRate = 1.0f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=Movement, meta = (ToolTip = "Changes how fast the player moves side to side"))
+	float MoveRightSpeedMultiplier = 0.3f;
 
 	FVector StartForwardVector;
 	FVector StartRightVector;
