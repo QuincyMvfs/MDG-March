@@ -46,12 +46,12 @@ public:
 	bool IsJousting = false;
 	
 	// Referenced Variables
-	UPROPERTY(EditAnywhere, Category="Jousting")
+	UPROPERTY(EditAnywhere, Category="Jousting|Referenced")
 	AMarchController* JoustingController = nullptr;
 
-	UPROPERTY(EditAnywhere, Category="Jousting")
+	UPROPERTY(EditAnywhere, Category="Jousting|Referenced")
 	UCameraComponent* JoustingCamera = nullptr;
 	
-	UPROPERTY(EditAnywhere, Category="Jousting")
+	UPROPERTY(EditAnywhere, Category="Jousting|Referenced")
 	UStaticMeshComponent* JoustingMesh = nullptr;
 };
