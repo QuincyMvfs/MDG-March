@@ -6,12 +6,17 @@
 #include "GameFramework/GameModeBase.h"
 #include "MarchGameMode.generated.h"
 
-UCLASS(minimalapi)
+/**
+ *  Simple GameMode for a third person game
+ */
+UCLASS(abstract)
 class AMarchGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
 
 public:
+	
+	/** Constructor */
 	AMarchGameMode();
 };
 

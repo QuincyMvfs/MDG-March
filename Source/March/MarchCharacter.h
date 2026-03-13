@@ -4,76 +4,93 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Logging/LogMacros.h"
 #include "MarchCharacter.generated.h"
 
-class UJoustingComponent;
+class USpringArmComponent;
+class UCameraComponent;
+class UInputAction;
+struct FInputActionValue;
 
-UCLASS(config=Game)
+DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
+
+/**
+ *  A simple player-controllable third person character
+ *  Implements a controllable orbiting camera
+ */
+UCLASS(abstract)
 class AMarchCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
 	/** Camera boom positioning the camera behind the character */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	class USpringArmComponent* CameraBoom;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components", meta = (AllowPrivateAccess = "true"))
+	USpringArmComponent* CameraBoom;
 
 	/** Follow camera */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	class UCameraComponent* FollowCamera;
-
-	// Motorcycle
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Motorcycle, meta = (AllowPrivateAccess = "true"))
-	UStaticMeshComponent* MotorcycleMeshComponent;
-
-	// Jousting
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Jousting, meta = (AllowPrivateAccess = "true"))
-	UJoustingComponent* JoustingComponent;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components", meta = (AllowPrivateAccess = "true"))
+	UCameraComponent* FollowCamera;
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Jousting, meta = (AllowPrivateAccess = "true"))
-	UStaticMeshComponent* LanceMeshComponent;
+protected:
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Jousting, meta = (AllowPrivateAccess = "true"))
-	UStaticMeshComponent* ShieldMeshComponent;
-	//
-	
+	/** Jump Input Action */
+	UPROPERTY(EditAnywhere, Category="Input")
+	UInputAction* JumpAction;
+
+	/** Move Input Action */
+	UPROPERTY(EditAnywhere, Category="Input")
+	UInputAction* MoveAction;
+
+	/** Look Input Action */
+	UPROPERTY(EditAnywhere, Category="Input")
+	UInputAction* LookAction;
+
+	/** Mouse Look Input Action */
+	UPROPERTY(EditAnywhere, Category="Input")
+	UInputAction* MouseLookAction;
+
 public:
-	AMarchCharacter();
-	void SetDefaultConstructorVariables();
 
-	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
-	float BaseTurnRate;
-
-	/** Base look up/down rate, in deg/sec. Other scaling may affect final rate. */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
-	float BaseLookUpRate = 1.0f;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=Movement, meta = (ToolTip = "Changes how fast the player moves side to side"))
-	float MoveRightSpeedMultiplier = 0.3f;
-
-	FVector StartForwardVector;
-	FVector StartRightVector;
+	/** Constructor */
+	AMarchCharacter();	
 
 protected:
 
-	
-	void BeginPlay() override;
-
-	/** Called for forwards/backward input */
-	void MoveForward(float Value);
-
-	/** Called for side to side input */
-	void MoveRight(float Value);
-	
-	void TurnAtRate(float Rate);
-	
-	void LookUpAtRate(float Rate);
-	
-protected:
+	/** Initialize input action bindings */
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+protected:
+
+	/** Called for movement input */
+	void Move(const FInputActionValue& Value);
+
+	/** Called for looking input */
+	void Look(const FInputActionValue& Value);
+
 public:
+
+	/** Handles move inputs from either controls or UI interfaces */
+	UFUNCTION(BlueprintCallable, Category="Input")
+	virtual void DoMove(float Right, float Forward);
+
+	/** Handles look inputs from either controls or UI interfaces */
+	UFUNCTION(BlueprintCallable, Category="Input")
+	virtual void DoLook(float Yaw, float Pitch);
+
+	/** Handles jump pressed inputs from either controls or UI interfaces */
+	UFUNCTION(BlueprintCallable, Category="Input")
+	virtual void DoJumpStart();
+
+	/** Handles jump pressed inputs from either controls or UI interfaces */
+	UFUNCTION(BlueprintCallable, Category="Input")
+	virtual void DoJumpEnd();
+
+public:
+
+	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
+
+	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 };
 
