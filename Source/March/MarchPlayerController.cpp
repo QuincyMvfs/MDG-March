@@ -5,13 +5,25 @@
 #include "EnhancedInputSubsystems.h"
 #include "Engine/LocalPlayer.h"
 #include "InputMappingContext.h"
-#include "Blueprint/UserWidget.h"
-#include "March.h"
-#include "Widgets/Input/SVirtualJoystick.h"
+
+AMarchPlayerController::AMarchPlayerController()
+{
+	// PlayerCameraManager->ViewPitchMin = M_ViewPitch.X;
+	// PlayerCameraManager->ViewPitchMax = M_ViewPitch.Y;
+	//
+	// PlayerCameraManager->ViewYawMin = M_ViewYaw.X;
+	// PlayerCameraManager->ViewYawMax = M_ViewYaw.Y;
+}
 
 void AMarchPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	PlayerCameraManager->ViewPitchMin = M_ViewPitch.X;
+	PlayerCameraManager->ViewPitchMax = M_ViewPitch.Y;
+	
+	PlayerCameraManager->ViewYawMin = M_ViewYaw.X;
+	PlayerCameraManager->ViewYawMax = M_ViewYaw.Y;
 }
 
 void AMarchPlayerController::SetupInputComponent()

@@ -7,6 +7,9 @@
 #include "JoustingComponent.generated.h"
 
 
+class UCameraComponent;
+class AMarchPlayerController;
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class MARCH_API UJoustingComponent : public UActorComponent
 {
@@ -24,5 +27,30 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-		
+	UFUNCTION(BlueprintCallable, Category="Jousting")
+	void StartJousting();
+
+	void DragCameraDown(float DeltaTime) const;
+
+	UFUNCTION(BlueprintCallable, Category="Jousting")
+	void StopJousting();
+	//
+
+	// Editor Tweak-able Variables
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Jousting", meta = (ToolTip = "How fast the Lance lowers"))
+	float JoustingGravity = 2.0f;
+	//
+	
+	UPROPERTY()
+	bool IsJousting = false;
+	
+	// Referenced Variables
+	UPROPERTY(EditAnywhere, Category="Jousting|Referenced")
+	AMarchPlayerController* JoustingController = nullptr;
+
+	UPROPERTY(EditAnywhere, Category="Jousting|Referenced")
+	UCameraComponent* JoustingCamera = nullptr;
+	
+	UPROPERTY(EditAnywhere, Category="Jousting|Referenced")
+	UStaticMeshComponent* JoustingMesh = nullptr;
 };

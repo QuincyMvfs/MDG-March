@@ -11,8 +11,27 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "March.h"
+#include "MarchPlayerController.h"
+#include "ActorComponents/JoustingComponent.h"
 
 AMarchCharacter::AMarchCharacter()
+{
+	SetDefaultConstructorVariables();
+	
+	MotorcycleMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("Motorcycle");
+	MotorcycleMeshComponent->SetupAttachment(GetRootComponent());
+	
+	LanceMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("Lance");
+	LanceMeshComponent->SetupAttachment(GetMesh());
+	ShieldMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("Shield");
+	ShieldMeshComponent->SetupAttachment(GetMesh());
+
+	JoustingComponent = CreateDefaultSubobject<UJoustingComponent>("JoustingComponent");
+	JoustingComponent->JoustingMesh = LanceMeshComponent;
+	JoustingComponent->JoustingCamera = GetFollowCamera();
+}
+
+void AMarchCharacter::SetDefaultConstructorVariables()
 {
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
@@ -48,6 +67,16 @@ AMarchCharacter::AMarchCharacter()
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
+}
+
+void AMarchCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+	
+	JoustingComponent->JoustingController = Cast<AMarchPlayerController>(GetController());
+	
+	M_StartForwardVector = GetRootComponent()->GetForwardVector();
+	M_StartRightVector = GetRootComponent()->GetRightVector();
 }
 
 void AMarchCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -92,32 +121,19 @@ void AMarchCharacter::Look(const FInputActionValue& Value)
 
 void AMarchCharacter::DoMove(float Right, float Forward)
 {
-	if (GetController() != nullptr)
-	{
-		// find out which way is forward
-		const FRotator Rotation = GetController()->GetControlRotation();
-		const FRotator YawRotation(0, Rotation.Yaw, 0);
-
-		// get forward vector
-		const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-
-		// get right vector 
-		const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
-
-		// add movement 
-		AddMovementInput(ForwardDirection, Forward);
-		AddMovementInput(RightDirection, Right);
-	}
+	if (!IsPawnControlled()) return;
+	
+	// Disable OrientRotationToMovement
+	AddMovementInput(M_StartForwardVector, Forward);
+	AddMovementInput(M_StartRightVector, Right);
 }
 
 void AMarchCharacter::DoLook(float Yaw, float Pitch)
 {
-	if (GetController() != nullptr)
-	{
-		// add yaw and pitch input to controller
-		AddControllerYawInput(Yaw);
-		AddControllerPitchInput(Pitch);
-	}
+	if (!IsPawnControlled()) return;
+	
+	AddControllerYawInput(Yaw);
+	AddControllerPitchInput(Pitch);
 }
 
 void AMarchCharacter::DoJumpStart()

@@ -3,32 +3,66 @@
 
 #include "JoustingComponent.h"
 
+#include "MarchPlayerController.h"
+#include "Camera/CameraComponent.h"
+
 // Sets default values for this component's properties
 UJoustingComponent::UJoustingComponent()
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
-
-	// ...
 }
-
 
 // Called when the game starts
 void UJoustingComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
-	// ...
-	
 }
 
-
-// Called every frame
-void UJoustingComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+void UJoustingComponent::TickComponent(float DeltaTime, enum ELevelTick TickType,
+	FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// ...
+	if (IsJousting)
+	{
+		DragCameraDown(GetWorld()->GetDeltaSeconds());
+	}
+}
+
+// Enables the Function called in Tick
+void UJoustingComponent::StartJousting()
+{
+	if (IsJousting) return;
+	
+	IsJousting = true;
+	SetComponentTickEnabled(true);
+}
+
+void UJoustingComponent::DragCameraDown(float DeltaTime) const
+{
+	if (!JoustingController) return;
+
+	// Drag Camera
+	JoustingController->AddPitchInput(JoustingGravity * DeltaTime);
+
+	// Drag Lance
+	FRotator LanceRotation = JoustingCamera->GetComponentRotation();
+	LanceRotation.Pitch -= 90.0f;
+	JoustingMesh->SetWorldRotation(LanceRotation);
+}
+
+// Disables the function called in tick
+void UJoustingComponent::StopJousting()
+{
+	if (!IsJousting)
+	{
+		if (IsComponentTickEnabled())
+		{
+			SetComponentTickEnabled(false);
+		}
+	}
+	
+	IsJousting = false;
+	SetComponentTickEnabled(false);
 }
 

@@ -7,6 +7,7 @@
 #include "Logging/LogMacros.h"
 #include "MarchCharacter.generated.h"
 
+class UJoustingComponent;
 class USpringArmComponent;
 class UCameraComponent;
 class UInputAction;
@@ -31,6 +32,21 @@ class AMarchCharacter : public ACharacter
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components", meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* FollowCamera;
 	
+	// Motorcycle
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Motorcycle, meta = (AllowPrivateAccess = "true"))
+	UStaticMeshComponent* MotorcycleMeshComponent;
+
+	// Jousting
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Jousting, meta = (AllowPrivateAccess = "true"))
+	UJoustingComponent* JoustingComponent;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Jousting, meta = (AllowPrivateAccess = "true"))
+	UStaticMeshComponent* LanceMeshComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Jousting, meta = (AllowPrivateAccess = "true"))
+	UStaticMeshComponent* ShieldMeshComponent;
+	//
+	
 protected:
 
 	/** Jump Input Action */
@@ -54,6 +70,10 @@ public:
 	/** Constructor */
 	AMarchCharacter();	
 
+	void SetDefaultConstructorVariables();
+	
+	virtual void BeginPlay() override;
+	
 protected:
 
 	/** Initialize input action bindings */
@@ -83,12 +103,14 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Input")
 	virtual void DoJumpEnd();
 
-public:
-
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+	
+private:
+	FVector M_StartForwardVector;
+	FVector M_StartRightVector;
 };
 
