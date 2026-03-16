@@ -41,7 +41,7 @@ class AMarchCharacter : public ACharacter
 	UJoustingComponent* JoustingComponent;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Jousting, meta = (AllowPrivateAccess = "true"))
-	UStaticMeshComponent* LanceMeshComponent;
+	USceneComponent* LanceRootComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Jousting, meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* ShieldMeshComponent;

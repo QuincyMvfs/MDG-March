@@ -21,13 +21,13 @@ AMarchCharacter::AMarchCharacter()
 	MotorcycleMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("Motorcycle");
 	MotorcycleMeshComponent->SetupAttachment(GetRootComponent());
 	
-	LanceMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("Lance");
-	LanceMeshComponent->SetupAttachment(GetMesh());
+	LanceRootComponent = CreateDefaultSubobject<USceneComponent>("LanceRoot");
+	LanceRootComponent->SetupAttachment(GetMesh());
 	ShieldMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("Shield");
 	ShieldMeshComponent->SetupAttachment(GetMesh());
 
 	JoustingComponent = CreateDefaultSubobject<UJoustingComponent>("JoustingComponent");
-	JoustingComponent->JoustingMesh = LanceMeshComponent;
+	JoustingComponent->JoustingRoot = LanceRootComponent;
 	JoustingComponent->JoustingCamera = GetFollowCamera();
 }
 

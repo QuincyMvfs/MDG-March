@@ -48,7 +48,7 @@ void UJoustingComponent::DragCameraDown(float DeltaTime) const
 	// Drag Lance
 	FRotator LanceRotation = JoustingCamera->GetComponentRotation();
 	LanceRotation.Pitch -= 90.0f;
-	JoustingMesh->SetWorldRotation(LanceRotation);
+	JoustingRoot->SetWorldRotation(LanceRotation);
 }
 
 // Disables the function called in tick

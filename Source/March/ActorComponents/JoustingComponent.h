@@ -52,5 +52,5 @@ public:
 	UCameraComponent* JoustingCamera = nullptr;
 	
 	UPROPERTY(EditAnywhere, Category="Jousting|Referenced")
-	UStaticMeshComponent* JoustingMesh = nullptr;
+	USceneComponent* JoustingRoot = nullptr;
 };
