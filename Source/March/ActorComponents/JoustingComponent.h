@@ -7,6 +7,7 @@
 #include "JoustingComponent.generated.h"
 
 
+class USphereComponent;
 class UCameraComponent;
 class AMarchPlayerController;
 
@@ -51,6 +52,16 @@ public:
 	UPROPERTY(EditAnywhere, Category="Jousting|Referenced")
 	UCameraComponent* JoustingCamera = nullptr;
 	
-	UPROPERTY(EditAnywhere, Category="Jousting|Referenced")
+	UPROPERTY()
 	USceneComponent* JoustingRoot = nullptr;
+	
+	UPROPERTY()
+	USphereComponent* JoustingCollider = nullptr;
+	
+	UFUNCTION(BlueprintCallable, Category="Jousting|Referenced")
+	void SetJoustingReferences(USceneComponent* Root, USphereComponent* Collider);
+	
+	UFUNCTION()
+	void OnSphereOverlapBegin( UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, 
+		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 };

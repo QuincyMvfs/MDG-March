@@ -7,6 +7,7 @@
 #include "Logging/LogMacros.h"
 #include "MarchCharacter.generated.h"
 
+class USphereComponent;
 class UJoustingComponent;
 class USpringArmComponent;
 class UCameraComponent;
@@ -33,18 +34,25 @@ class AMarchCharacter : public ACharacter
 	UCameraComponent* FollowCamera;
 	
 	// Motorcycle
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Motorcycle, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Motorcycle, meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* MotorcycleMeshComponent;
 
 	// Jousting
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Jousting, meta = (AllowPrivateAccess = "true"))
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Jousting|Components")
 	UJoustingComponent* JoustingComponent;
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Jousting, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Jousting|Components")
+	USphereComponent* JoustingColliderComponent;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Jousting|Components|Mesh's")
 	USceneComponent* LanceRootComponent;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Jousting, meta = (AllowPrivateAccess = "true"))
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Jousting|Components|Mesh's")
 	UStaticMeshComponent* ShieldMeshComponent;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Jousting|Components|Mesh's")
+	UStaticMeshComponent* LanceMeshComponent;
 	//
 	
 protected:
@@ -66,8 +74,6 @@ protected:
 	UInputAction* MouseLookAction;
 
 public:
-
-	/** Constructor */
 	AMarchCharacter();	
 
 	void SetDefaultConstructorVariables();

@@ -5,6 +5,8 @@
 
 #include "MarchPlayerController.h"
 #include "Camera/CameraComponent.h"
+#include "Components/SphereComponent.h"
+#include "Interfaces/HitableInterface.h"
 
 // Sets default values for this component's properties
 UJoustingComponent::UJoustingComponent()
@@ -16,6 +18,8 @@ UJoustingComponent::UJoustingComponent()
 void UJoustingComponent::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	JoustingCollider->OnComponentBeginOverlap.AddDynamic(this, &UJoustingComponent::OnSphereOverlapBegin);
 }
 
 void UJoustingComponent::TickComponent(float DeltaTime, enum ELevelTick TickType,
@@ -48,7 +52,7 @@ void UJoustingComponent::DragCameraDown(float DeltaTime) const
 	// Drag Lance
 	FRotator LanceRotation = JoustingCamera->GetComponentRotation();
 	LanceRotation.Pitch -= 90.0f;
-	JoustingRoot->SetWorldRotation(LanceRotation);
+	JoustingRoot->SetWorldRotation(LanceRotation, true);
 }
 
 // Disables the function called in tick
@@ -64,5 +68,24 @@ void UJoustingComponent::StopJousting()
 	
 	IsJousting = false;
 	SetComponentTickEnabled(false);
+}
+
+void UJoustingComponent::SetJoustingReferences(USceneComponent* Root, USphereComponent* Collider)
+{
+	JoustingRoot = Root;
+	JoustingCollider = Collider;
+}
+
+void UJoustingComponent::OnSphereOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	UE_LOG(LogTemp, Warning, TEXT("HIT"));
+	
+	if (OtherActor->Implements<UHitableInterface>())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("HIT CORRECT OBJECT"));
+		
+		IHitableInterface::Execute_OnHit(OtherActor);
+	}
 }
 

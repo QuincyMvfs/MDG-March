@@ -13,6 +13,7 @@
 #include "March.h"
 #include "MarchPlayerController.h"
 #include "ActorComponents/JoustingComponent.h"
+#include "Components/SphereComponent.h"
 
 AMarchCharacter::AMarchCharacter()
 {
@@ -21,14 +22,23 @@ AMarchCharacter::AMarchCharacter()
 	MotorcycleMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("Motorcycle");
 	MotorcycleMeshComponent->SetupAttachment(GetRootComponent());
 	
-	LanceRootComponent = CreateDefaultSubobject<USceneComponent>("LanceRoot");
+	JoustingComponent = CreateDefaultSubobject<UJoustingComponent>("Jousting Component");
+	
+	LanceRootComponent = CreateDefaultSubobject<USceneComponent>("Lance Root");
 	LanceRootComponent->SetupAttachment(GetMesh());
+	
+	LanceMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("Lance Mesh");
+	LanceMeshComponent->SetupAttachment(LanceRootComponent);
+	
+	JoustingColliderComponent = CreateDefaultSubobject<USphereComponent>("Jousting Collider");
+	JoustingColliderComponent->SetupAttachment(LanceRootComponent);
+	
 	ShieldMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("Shield");
 	ShieldMeshComponent->SetupAttachment(GetMesh());
-
-	JoustingComponent = CreateDefaultSubobject<UJoustingComponent>("JoustingComponent");
-	JoustingComponent->JoustingRoot = LanceRootComponent;
+	
 	JoustingComponent->JoustingCamera = GetFollowCamera();
+	JoustingComponent->SetJoustingReferences(LanceRootComponent, JoustingColliderComponent);
+	
 }
 
 void AMarchCharacter::SetDefaultConstructorVariables()
@@ -42,7 +52,7 @@ void AMarchCharacter::SetDefaultConstructorVariables()
 	bUseControllerRotationRoll = false;
 
 	// Configure character movement
-	GetCharacterMovement()->bOrientRotationToMovement = true;
+	GetCharacterMovement()->bOrientRotationToMovement = false;
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f);
 
 	// Note: For faster iteration times these variables, and many more, can be tweaked in the Character Blueprint
@@ -57,7 +67,7 @@ void AMarchCharacter::SetDefaultConstructorVariables()
 	// Create a camera boom (pulls in towards the player if there is a collision)
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
-	CameraBoom->TargetArmLength = 400.0f;
+	CameraBoom->TargetArmLength = 250.0f;
 	CameraBoom->bUsePawnControlRotation = true;
 
 	// Create a follow camera
@@ -72,6 +82,8 @@ void AMarchCharacter::SetDefaultConstructorVariables()
 void AMarchCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	UE_LOG(LogTemp, Warning, TEXT("RootComponent = %s"), *GetRootComponent()->GetName());
 	
 	JoustingComponent->JoustingController = Cast<AMarchPlayerController>(GetController());
 	
